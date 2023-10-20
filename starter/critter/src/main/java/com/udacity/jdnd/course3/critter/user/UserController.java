@@ -1,8 +1,10 @@
 package com.udacity.jdnd.course3.critter.user;
 
 import com.udacity.jdnd.course3.critter.entities.Customer;
+import com.udacity.jdnd.course3.critter.entities.Employee;
 import com.udacity.jdnd.course3.critter.entities.Pet;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
+import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,9 @@ public class UserController {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    EmployeeService employeeService;
+
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
@@ -35,7 +40,6 @@ public class UserController {
                     .collect(Collectors.toList())
             );
         }
-
         // Setting the id to customer DTO so that it is also presented to the front end side.
         customerDTO.setId(createCustomer.getId());
 
@@ -56,7 +60,8 @@ public class UserController {
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        Employee employee = employeeService.saveEmployee(convertEmployeeDTOToEmployee(employeeDTO));
+        return employeeDTO;
     }
 
     @PostMapping("/employee/{employeeId}")
@@ -90,6 +95,24 @@ public class UserController {
         List<Long> petIds = customer.getPetIds().stream().map(Pet::getId).collect(Collectors.toList());
         return new CustomerDTO(customer.getId(), customer.getName(), customer.getPhoneNumber(), customer.getNotes(), petIds);
 
+    }
+
+    private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO){
+        Employee employee = new Employee();
+        employee.setName(employeeDTO.getName());
+        employee.setSkills(employeeDTO.getSkills());
+        employee.setDaysAvailable(employeeDTO.getDaysAvailable());
+
+        return employee;
+    }
+
+    private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        employeeDTO.setName(employee.getName());
+        employeeDTO.setSkills(employee.getSkills());
+        employeeDTO.setDaysAvailable(employee.getDaysAvailable());
+
+        return employeeDTO;
     }
 
 }
