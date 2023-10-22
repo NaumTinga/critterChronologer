@@ -52,7 +52,13 @@ public class ScheduleController {
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        List<Schedule> schedules;
+        try {
+            schedules = scheduleService.getEmployeeSchedule(employeeId);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Employee schedule with employee id: " + employeeId + " not found", exception);
+        }
+        return schedules.stream().map(this::convertScheduleToScheduleDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/customer/{customerId}")

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class PetService {
 
     @Autowired
@@ -30,7 +31,7 @@ public class PetService {
         return petRepository.findAll();
     }
 
-    @Transactional
+
     public Pet savePet(Pet pet, Long ownerId) {
         Customer customer = customerRepository.getOne(ownerId);
 
@@ -48,5 +49,11 @@ public class PetService {
 
         return pet;
     }
+
+    public List<Pet> getPetsByOwnerId(long ownerId) {
+        List<Pet> pets = petRepository.findPetByOwnerId(ownerId);
+        return pets;
+    }
+
 
 }

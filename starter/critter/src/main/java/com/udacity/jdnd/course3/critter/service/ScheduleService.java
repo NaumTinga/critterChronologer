@@ -40,4 +40,10 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
+    public List<Schedule> getEmployeeSchedule(Long employeeId) {
+        Employee employee = employeeRepository.getOne(employeeId);
+        List<Schedule> schedules = scheduleRepository.findByEmployeeIds(employee);
+        return schedules;
+    }
+
 }

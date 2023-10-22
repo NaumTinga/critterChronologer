@@ -57,8 +57,16 @@ public class UserController {
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId){
-        throw new UnsupportedOperationException();
+
+        Customer customer;
+        try {
+            customer = customerService.getCustomerByPetId(petId);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Owner pet with id: " + petId + " not found", exception);
+        }
+        return convertCustomerToCustomerDTO(customer);
     }
+
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
@@ -82,8 +90,10 @@ public class UserController {
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        List<Employee> employees = employeeService.getEmployeesByService(employeeDTO.getDate(), employeeDTO.getSkills());
+        return employees.stream().map(this::convertEmployeeToEmployeeDTO).collect(Collectors.toList());
     }
+
 
 
     private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO){

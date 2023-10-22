@@ -4,10 +4,13 @@ import com.udacity.jdnd.course3.critter.entities.Customer;
 import com.udacity.jdnd.course3.critter.entities.Pet;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.PetService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Pets.
@@ -28,10 +31,8 @@ public class PetController {
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
         Pet pet = convertPetDTOToPet(petDTO);
         Pet petSaved = petService.savePet(pet, petDTO.getOwnerId());
-
         // No need to manually associate the pet with the customer here.
         // The association is handled within the savePet method in the service.
-
         petDTO.setId(petSaved.getId());
         return petDTO;
     }
@@ -45,12 +46,20 @@ public class PetController {
 
     @GetMapping
     public List<PetDTO> getPets(){
-        throw new UnsupportedOperationException();
+        List<Pet> pets = petService.getAllPets();
+        return pets.stream().map(this::convertPetToPetDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-        throw new UnsupportedOperationException();
+
+        List<Pet> pets;
+        try {
+            pets = petService.getPetsByOwnerId(ownerId);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Owner pet with id " + ownerId + " not found", exception);
+        }
+        return pets.stream().map(this::convertPetToPetDTO).collect(Collectors.toList());
     }
 
 
@@ -72,4 +81,21 @@ public class PetController {
         }
         return pet;
     }
+
+    private PetDTO convertPetToPetDTO(Pet pet) {
+        PetDTO petDTO = new PetDTO();
+        petDTO.setType(pet.getType());
+        petDTO.setName(pet.getName());
+        petDTO.setBirthDate(pet.getBirthDate());
+        petDTO.setNotes(pet.getNotes());
+
+        if (pet.getOwnerId() != null) {
+            petDTO.setOwnerId(pet.getOwnerId().getId());
+        } else {
+            petDTO.setOwnerId(0); // or any other default value
+        }
+
+        return petDTO;
+    }
+
 }
