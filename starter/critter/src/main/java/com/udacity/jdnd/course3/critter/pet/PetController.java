@@ -40,8 +40,14 @@ public class PetController {
 
 
     @GetMapping("/{petId}")
-    public PetDTO getPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+    public PetDTO getPet(@PathVariable Long petId) {
+        Pet pet;
+        try {
+            pet = petService.getPetById(petId);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pet with id: " + petId + " not found", exception);
+        }
+        return convertPetToPetDTO(pet);
     }
 
     @GetMapping
@@ -51,7 +57,7 @@ public class PetController {
     }
 
     @GetMapping("/owner/{ownerId}")
-    public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
+    public List<PetDTO> getPetsByOwner(@PathVariable Long ownerId) {
 
         List<Pet> pets;
         try {

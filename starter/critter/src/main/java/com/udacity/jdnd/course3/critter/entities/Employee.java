@@ -5,6 +5,7 @@ import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,6 +19,8 @@ public class Employee {
     @Nationalized
     private String name;
 
+    @ManyToMany(mappedBy = "employeesIds", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Schedule> schedules;
     @ElementCollection
     private Set<EmployeeSkill> skills;
 

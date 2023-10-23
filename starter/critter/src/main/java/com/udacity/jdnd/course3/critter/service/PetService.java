@@ -50,7 +50,11 @@ public class PetService {
         return pet;
     }
 
-    public List<Pet> getPetsByOwnerId(long ownerId) {
+    public Pet getPetById(Long petId) {
+        return petRepository.getOne(petId);
+    }
+
+    public List<Pet> getPetsByOwnerId(Long ownerId) {
         List<Pet> pets = petRepository.findPetByOwnerId(ownerId);
         return pets;
     }

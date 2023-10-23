@@ -23,7 +23,7 @@ public class ScheduleController {
     ScheduleService scheduleService;
 
     private ScheduleDTO convertScheduleToScheduleDTO(Schedule schedule) {
-        List<Long> employeeIds = schedule.getEmployeeIds().stream().map(Employee::getId).collect(Collectors.toList());
+        List<Long> employeeIds = schedule.getEmployeesIds().stream().map(Employee::getId).collect(Collectors.toList());
         List<Long> petIds = schedule.getPetIds().stream().map(Pet::getId).collect(Collectors.toList());
 
         return new ScheduleDTO(schedule.getId(), employeeIds, petIds, schedule.getDate(), schedule.getActivities());
@@ -42,12 +42,20 @@ public class ScheduleController {
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        throw new UnsupportedOperationException();
+        List<Schedule> schedules = scheduleService.getAllSchedules();
+        return schedules.stream().map(this::convertScheduleToScheduleDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+
+        List<Schedule> schedules;
+        try {
+            schedules = scheduleService.getPetSchedule(petId);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pet schedule with id: " + petId + " not found", exception);
+        }
+        return schedules.stream().map(this::convertScheduleToScheduleDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/employee/{employeeId}")
@@ -63,6 +71,12 @@ public class ScheduleController {
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
-        throw new UnsupportedOperationException();
+        List<Schedule> schedules;
+        try {
+            schedules = scheduleService.getCustomerSchedule(customerId);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Schedule with owner id " + customerId + " not found", exception);
+        }
+        return schedules.stream().map(this::convertScheduleToScheduleDTO).collect(Collectors.toList());
     }
 }

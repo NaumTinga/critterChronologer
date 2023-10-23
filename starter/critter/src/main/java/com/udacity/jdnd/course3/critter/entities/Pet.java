@@ -5,6 +5,7 @@ import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -12,7 +13,7 @@ public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private PetType type;
@@ -23,6 +24,15 @@ public class Pet {
     @ManyToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer ownerId;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "schedule_pet",
+            joinColumns = @JoinColumn(name = "pet_id"),
+            inverseJoinColumns = @JoinColumn(name = "schedule_id")
+    )
+    private List<Schedule> schedules;
+
     private LocalDate birthDate;
     private String notes;
 
@@ -65,6 +75,14 @@ public class Pet {
 
     public Customer getOwnerId() {
         return ownerId;
+    }
+
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
     }
 
     public void setOwnerId(Customer ownerId) {

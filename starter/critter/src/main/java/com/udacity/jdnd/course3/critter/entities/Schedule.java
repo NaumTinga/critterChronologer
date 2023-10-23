@@ -16,11 +16,21 @@ public class Schedule {
     @GeneratedValue
     private long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "schedule_id") // Add this line to specify the foreign key column
-    private List<Employee> employeeIds;
 
-    @ManyToMany( cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "employee_schedule",
+            joinColumns = @JoinColumn(name = "schedule_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
+    private List<Employee> employeesIds;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "schedule_pet",
+            joinColumns = @JoinColumn(name = "schedule_id"),
+            inverseJoinColumns = @JoinColumn(name = "pet_id")
+    )
     private List<Pet> petIds;
     private LocalDate date;
 
@@ -43,12 +53,12 @@ public class Schedule {
         this.id = id;
     }
 
-    public List<Employee> getEmployeeIds() {
-        return employeeIds;
+    public List<Employee> getEmployeesIds() {
+        return employeesIds;
     }
 
-    public void setEmployeeIds(List<Employee> employeeIds) {
-        this.employeeIds = employeeIds;
+    public void setEmployeesIds(List<Employee> employeesIds) {
+        this.employeesIds = employeesIds;
     }
 
     public List<Pet> getPetIds() {
