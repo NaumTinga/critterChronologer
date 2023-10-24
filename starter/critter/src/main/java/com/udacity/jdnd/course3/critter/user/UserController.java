@@ -74,10 +74,17 @@ public class UserController {
         return employeeDTO;
     }
 
-    @PostMapping("/employee/{employeeId}")
+    @GetMapping ("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        try {
+            Employee employee = employeeService.getEmployeeById(employeeId);
+            return convertEmployeeToEmployeeDTO(employee);
+        } catch (Exception exception) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST," Employee with id: " + employeeId + " not found", exception);
+        }
     }
+
 
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {

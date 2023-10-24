@@ -38,4 +38,9 @@ public class EmployeeService {
                 .collect(Collectors.toList());
         return employees;
     }
+
+    public Employee getEmployeeById(Long employeeId){
+        Employee employee = employeeRepository.getOne(employeeId);
+        return employee;
+    }
 }
