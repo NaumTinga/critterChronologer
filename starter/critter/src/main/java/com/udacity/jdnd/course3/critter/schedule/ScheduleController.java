@@ -30,6 +30,8 @@ public class ScheduleController {
     }
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        // Log the received scheduleDTO to help with debugging
+        System.out.println("Received scheduleDTO: " + scheduleDTO);
         Schedule schedule = new Schedule(scheduleDTO.getDate(), scheduleDTO.getActivities());;
         ScheduleDTO convertedSchedule;
         try {
