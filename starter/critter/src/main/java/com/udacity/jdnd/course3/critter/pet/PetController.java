@@ -31,8 +31,6 @@ public class PetController {
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
         Pet pet = convertPetDTOToPet(petDTO);
         Pet petSaved = petService.savePet(pet, petDTO.getOwnerId());
-        // No need to manually associate the pet with the customer here.
-        // The association is handled within the savePet method in the service.
         petDTO.setId(petSaved.getId());
         return petDTO;
     }
@@ -69,11 +67,7 @@ public class PetController {
     }
 
 
-    /**
-     * Helper Method
-     * @param petDTO    petDTO object to be converted
-     * @return      entity form of pet
-     */
+
     private Pet convertPetDTOToPet(PetDTO petDTO) {
         Pet pet = new Pet();
         pet.setType(petDTO.getType());
@@ -98,7 +92,7 @@ public class PetController {
         if (pet.getOwnerId() != null) {
             petDTO.setOwnerId(pet.getOwnerId().getId());
         } else {
-            petDTO.setOwnerId(0); // or any other default value
+            petDTO.setOwnerId(0);
         }
 
         return petDTO;

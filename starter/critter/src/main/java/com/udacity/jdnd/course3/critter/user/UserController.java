@@ -42,7 +42,6 @@ public class UserController {
                     .collect(Collectors.toList())
             );
         }
-        // Setting the id to customer DTO so that it is also presented to the front end side.
         customerDTO.setId(createCustomer.getId());
 
         return customerDTO;
