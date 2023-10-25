@@ -70,6 +70,7 @@ public class UserController {
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
         Employee employee = employeeService.saveEmployee(convertEmployeeDTOToEmployee(employeeDTO));
+        employeeDTO.setId(employee.getId());
         return employeeDTO;
     }
 
@@ -114,6 +115,7 @@ public class UserController {
     // Convert Entities to DTOs
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer){
         CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(customer.getId());
         List<Long> petIds = customer.getPetIds().stream().map(Pet::getId).collect(Collectors.toList());
         return new CustomerDTO(customer.getId(), customer.getName(), customer.getPhoneNumber(), customer.getNotes(), petIds);
 
@@ -130,6 +132,7 @@ public class UserController {
 
     private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
+        employeeDTO.setId(employee.getId());
         employeeDTO.setName(employee.getName());
         employeeDTO.setSkills(employee.getSkills());
         employeeDTO.setDaysAvailable(employee.getDaysAvailable());

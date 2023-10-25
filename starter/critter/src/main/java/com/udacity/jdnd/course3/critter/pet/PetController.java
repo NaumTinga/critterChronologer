@@ -27,12 +27,21 @@ public class PetController {
         this.customerService = customerService;
     }
 
-    @PostMapping("/pet")
+    @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-        Pet pet = convertPetDTOToPet(petDTO);
-        Pet petSaved = petService.savePet(pet, petDTO.getOwnerId());
-        petDTO.setId(petSaved.getId());
-        return petDTO;
+        Pet pet = new Pet(petDTO.getType(), petDTO.getName(), petDTO.getBirthDate(), petDTO.getNotes());
+        PetDTO convertedPet;
+        try {
+            convertedPet = convertPetToPetDTO(petService.savePet(pet, petDTO.getOwnerId()));
+        } catch (Exception exception) {
+            // Handle all types of exceptions and return informative error messages
+            String errorMessage = "An error occurred while saving the pet.";
+            if (exception.getMessage() != null) {
+                errorMessage += " Details: " + exception.getMessage();
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage, exception);
+        }
+        return convertedPet;
     }
 
 
@@ -92,10 +101,14 @@ public class PetController {
         if (pet.getOwnerId() != null) {
             petDTO.setOwnerId(pet.getOwnerId().getId());
         } else {
-            petDTO.setOwnerId(0);
+            petDTO.setOwnerId(null);  // Set to null when there is no owner
         }
+
+        // Set the id to the pet's id
+        petDTO.setId(pet.getId());
 
         return petDTO;
     }
+
 
 }

@@ -49,11 +49,18 @@ public class Pet {
 
     }
 
-    public long getId() {
+    public Pet(PetType type, String name, LocalDate birthDate, String notes) {
+        this.type = type;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.notes = notes;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -35,20 +35,16 @@ public class PetService {
     public Pet savePet(Pet pet, Long ownerId) {
         Customer customer = customerRepository.getOne(ownerId);
 
-        // Set the owner of the pet
+        // Add the new pet to the owner's list of pets
         pet.setOwnerId(customer);
-
-        // Save the pet
         pet = petRepository.save(pet);
-
-        // Add the pet to the customer's list of pets
-        customer.getPetIds().add(pet);
-
-        // Save the updated customer (not just the pet)
+        customer.getPetIds().add(pet); // Add the pet to the existing list
         customerRepository.save(customer);
 
         return pet;
     }
+
+
 
     public Pet getPetById(Long petId) {
         return petRepository.getOne(petId);

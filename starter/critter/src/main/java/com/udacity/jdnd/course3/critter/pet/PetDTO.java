@@ -7,12 +7,23 @@ import java.time.LocalDate;
  * to the database directly.
  */
 public class PetDTO {
-    private long id;
+    private Long id;
     private PetType type;
     private String name;
     private long ownerId;
     private LocalDate birthDate;
     private String notes;
+
+    public PetDTO(PetType type, String name, Long ownerId, LocalDate birthDate, String notes) {
+        this.type = type;
+        this.name = name;
+        this.ownerId = ownerId;
+        this.birthDate = birthDate;
+        this.notes = notes;
+    }
+
+    public PetDTO() {
+    }
 
     public PetType getType() {
         return type;
@@ -34,7 +45,7 @@ public class PetDTO {
         return ownerId;
     }
 
-    public void setOwnerId(long ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -58,7 +69,7 @@ public class PetDTO {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }
