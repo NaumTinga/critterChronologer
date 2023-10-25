@@ -64,16 +64,23 @@ public class PetController {
     }
 
     @GetMapping("/owner/{ownerId}")
-    public List<PetDTO> getPetsByOwner(@PathVariable Long ownerId) {
-
-        List<Pet> pets;
+    public List<PetDTO> getPetsByOwner(@PathVariable("ownerId") Long ownerId) {
+        Customer owner = customerService.getCustomerById(ownerId);
         try {
-            pets = petService.getPetsByOwnerId(ownerId);
+            List<Pet> pets = petService.getPetsByOwnerId(owner);
+            return pets.stream().map(this::convertPetToPetDTO).collect(Collectors.toList());
         } catch (Exception exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Owner pet with id " + ownerId + " not found", exception);
+            // Handle and log the exception
+            String errorMessage = "Error occurred while fetching pets for owner with id " + ownerId;
+            if (exception.getMessage() != null) {
+                errorMessage += ". Details: " + exception.getMessage();
+            }
+            System.err.println(errorMessage); // Log the error
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage, exception);
         }
-        return pets.stream().map(this::convertPetToPetDTO).collect(Collectors.toList());
     }
+
+
 
 
 
